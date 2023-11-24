@@ -1,0 +1,16 @@
+{
+  "intelephense.files.autoImport.root": true,
+  "intelephense.files.maxSize": 1000000,
+  "intelephense.files.exclude": [
+      "**/.git/**",
+      "**/.svn/**",
+      "**/.hg/**",
+      "**/CVS/**",
+      "**/.DS_Store/**",
+      "**/node_modules/**",
+      "**/bower_components/**",
+      "**/vendor/**/{Test,test,Tests,tests}/**",
+      "**/*.+(json|xml)"
+  ],
+  "intelephense.environment.phpVersion": "8.2.12",  
+}

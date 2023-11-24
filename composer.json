@@ -1,0 +1,28 @@
+{
+    "name": "kevinsr09/rumi-framework",
+    "description": "simple framework php laravel",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Rumi\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Rumi\\Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "kevinsr09",
+            "email": "kevinstivenrugeles@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    },
+    "scripts": {
+        "test": "phpunit --color=always --testdox -v tests/"
+    }
+}
