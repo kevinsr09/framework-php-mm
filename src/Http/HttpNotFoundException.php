@@ -1,6 +1,6 @@
 <?php
 
-namespace Rumi;
+namespace Rumi\Http;
 
 class HttpNotFoundException extends \Exception{
 

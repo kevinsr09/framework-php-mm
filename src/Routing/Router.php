@@ -1,8 +1,10 @@
 <?php
 
-namespace Rumi;
+namespace Rumi\Routing;
 
 use Closure;
+use Rumi\Http\HttpMethod;
+use Rumi\Http\HttpNotFoundException;
 
 class Router{
   protected array $routes = [];
@@ -19,10 +21,10 @@ class Router{
     $this->routes[$method->value][] = new Route($path, $handler);
 
   }
-  public function resolve(string $uri , string $method){
+  public function resolve(Request $request){
 
-    foreach($this->routes[strtoupper($method)] as $route){
-      if($route->matches($uri)){
+    foreach($this->routes[strtoupper($request->method()->value)] as $route){
+      if($route->matches($request->uri())){
         return $route;
       }
     }

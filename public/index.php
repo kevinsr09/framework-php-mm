@@ -2,9 +2,10 @@
 
 require_once '../vendor/autoload.php';
 
-use Rumi\Router;
-use Rumi\HttpNotFoundException;
-use Rumi\Route;
+use Rumi\Routing\Router;
+use Rumi\Http\HttpNotFoundException;
+use Rumi\Routing\Request;
+use Rumi\Server\PHPServer;
 
 $router = new Router();
 
@@ -26,10 +27,8 @@ $router->post('/', function(){
 });
 
 try{
-  // $handle = $router->resolve($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
-  // print($handle());
-
-  $route = $router->resolve($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
+  
+  $route = $router->resolve(new Request(new PHPServer()));
 
   $handler = $route->handler();
 

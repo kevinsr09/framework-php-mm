@@ -4,7 +4,7 @@ namespace Rumi\Tests;
 
 use Closure;
 use PHPUnit\Framework\TestCase;
-use Rumi\Route;
+use Rumi\Routing\Route;
 
 class RouteTest extends  TestCase {
 
