@@ -5,6 +5,7 @@ namespace Rumi\Routing;
 use Closure;
 use Rumi\Http\HttpMethod;
 use Rumi\Http\HttpNotFoundException;
+use Rumi\Http\Request;
 
 class Router{
   protected array $routes = [];

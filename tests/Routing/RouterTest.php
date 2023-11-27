@@ -3,18 +3,18 @@
 namespace Rumi\Tests;
 use PHPUnit\Framework\TestCase;
 use Rumi\Http\HttpMethod;
-use Rumi\Routing\Request;
+use Rumi\Http\Request;
 use Rumi\Routing\Router;
 use Rumi\Server\Server;
 
 class RouterTest extends TestCase {
 
-  private function mock_server(string $uri, HttpMethod $method){
-    $mock = $this->getMockBuilder(Server::class)->getMock();
-    $mock->method('request_uri')->willReturn($uri);
-    $mock->method('request_method')->willReturn($method);
+  private function requestMock(string $uri, HttpMethod $method){
+    $requestMock = (new Request())
+      ->setUri($uri)
+      ->setMethod($method);
 
-    return new Request($mock);
+    return $requestMock;
   }
 
   public function test_resolve_baseic_route(){
@@ -22,7 +22,7 @@ class RouterTest extends TestCase {
     $path = '/test';
     $handler = fn()=> 'test';
     $router->get($path, $handler);
-    $responseRouter = $router->resolve($this->mock_server($path, HttpMethod::GET));    
+    $responseRouter = $router->resolve($this->requestMock($path, HttpMethod::GET));    
     $this->assertEquals($handler, $responseRouter->handler());
     }
 
@@ -44,7 +44,7 @@ class RouterTest extends TestCase {
       $router->{strtolower($method->value)}($path, $handler);
     }
     foreach($routes as [$path, $method, $handler]){
-      $responseRouter = $router->resolve($this->mock_server($path, $method));
+      $responseRouter = $router->resolve($this->requestMock($path, $method));
       $this->assertEquals($handler, $responseRouter->handler());
     }
   }

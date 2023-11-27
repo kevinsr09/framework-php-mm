@@ -2,11 +2,10 @@
 
 namespace Rumi\Server;
 
-use Rumi\Http\HttpMethod;
+use Rumi\Http\Request;
+use Rumi\Http\Response;
 
 interface Server{
-  public function request_uri():string;
-  public function request_method():HttpMethod;
-  public function post_data():array;
-  public function query_params():array;
+  public function getRequest():Request;
+  public function send_response(Response $response);
 }
