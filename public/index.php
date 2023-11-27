@@ -12,50 +12,46 @@ $router = new Router();
 
 
 $router->get('/', function(Request $request){
-  $response = new Response();
-  $response->setHeader('Content-Type', 'text/html');
-  $response->setContent(json_encode(['message' => 'Hello get']));
-  $response->status(201);
+  $response = Response::json(['message' => 'Hello get']);
   return $response;
 });
 
 $router->get('/hello', function(Request $request){
-  $response = new Response();
-  $response->setHeader('Content-Type', 'text/html');
-  $response->setContent(json_encode(['message' => 'Hello']));
+  $response =  (Response::json(['message' => 'Hello']))->setStatus(200);
   $response->status(200);
   return $response;
 });
 
 $router->get('/hello/{name}', function(Request $request){
-  $response = new Response();
-  $response->setHeader('Content-Type', 'text/html');
-  $response->setContent(json_encode(['message' => 'Hello name']));
-  $response->status(200);
+  $response = Response::redirect('/hello');
   return $response;
 });
 
 $router->post('/', function(Request $request){
-  $response = new Response();
-  $response->setHeader('Content-Type', 'text/html');
-  $response->setContent(json_encode(['message' => 'Hello post']));
-  $response->status(200);
+  $response = (Response::json(['message' => 'Hello post']))->setStatus(200);
+  return $response;
+});
+$router->post('/data', function(Request $request){
+  $response = (Response::json($request->data()))->setStatus(200);
+  return $response;
+});
+$router->post('/data/query', function(Request $request){
+  $response = (Response::json($request->queryUrl()))->setStatus(200);
   return $response;
 });
 
 $server = new PHPServer();
 try{
-  $request = new Request($server);
+  $request = $server->getRequest();
+  var_dump($request->uri());
   $route = $router->resolve($request);
+  $request->setRoute($route);
   $handler = $route->handler();
   $response = $handler($request);
 
   $server->send_response($response);
 } catch(HttpNotFoundException $e){
 
-  $response = new Response();
-  $response->setHeader('Content-Type', 'text/plain');
-  $response->setStatus(404);
-  $response->setContent('Not found');
+  $response = Response::text('Not found')->setStatus(404);
   $server->send_response($response);
 }
