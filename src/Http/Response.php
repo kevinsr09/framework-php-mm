@@ -18,7 +18,10 @@ class Response{
     return $this;
   }
 
-  public function headers(): array{
+  public function headers(string $key = null ): array | string{
+    if(array_key_exists(strtolower($key), $this->headers) && !is_null($key)){
+      return $this->headers[strtolower($key)];
+    }
     return $this->headers;
   }
 
@@ -46,8 +49,8 @@ class Response{
   }
 
   public function prepare(){
-    if($this->content){
-      $this->headers['content-length'] = strlen($this->content);
+    if(!is_null($this->content)){
+      $this->headers['content-length'] = strval(strlen($this->content));
     }else{
       $this->removeHeader('content-length');
       $this->removeHeader('content-type');

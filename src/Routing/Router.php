@@ -22,7 +22,7 @@ class Router{
     $this->routes[$method->value][] = new Route($path, $handler);
 
   }
-  public function resolve(Request $request){
+  public function resolve(Request $request): Route{
 
     foreach($this->routes[strtoupper($request->method()->value)] as $route){
       if($route->matches($request->uri())){

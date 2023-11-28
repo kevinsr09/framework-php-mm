@@ -12,6 +12,7 @@ class Request{
   protected array $data;
   protected array $query;
   protected Route $route;
+  protected array $params;
 
 
   public function uri():string{
@@ -42,7 +43,10 @@ class Request{
   }
 
 
-  public function query():array{
+  public function query(string $key = null):array | string{
+    if(array_key_exists(strtolower($key), $this->query) && !is_null($key)){
+      return $this->query[strtolower($key)];
+    }
     return $this->query;
   }
 
@@ -60,8 +64,12 @@ class Request{
     return $this;
   }
 
-  public function queryUrl():array{
-    $this->query = $this->route->parseParameters($this->uri);
-    return $this->query;
+  public function params():array{
+    return $this->params;
+  }
+
+  public function setParams(array $params): self{
+    $this->params = $params;
+    return $this;
   }
 }
