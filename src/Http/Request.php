@@ -9,10 +9,11 @@ class Request{
 
   protected string $uri;
   protected HttpMethod $method;
-  protected array $data;
-  protected array $query;
+  protected array $data = [];
+  protected array $query = [];
   protected Route $route;
-  protected array $params;
+  protected array $params = [];
+  protected array $headers = [];
 
 
   public function uri():string{
@@ -70,6 +71,20 @@ class Request{
 
   public function setParams(array $params): self{
     $this->params = $params;
+    return $this;
+  }
+
+  public function headers(string $header = null): array | string | null{
+    if (array_key_exists(strtolower($header), $this->headers) && !is_null($header)) {
+      return $this->headers[strtolower($header)];
+    }
+    return $this->headers;
+  }
+
+  public function setHeaders(array $headers): self{
+    foreach($headers as $key => $value){
+      $this->headers[strtolower($key)] = $value;
+    }
     return $this;
   }
 }

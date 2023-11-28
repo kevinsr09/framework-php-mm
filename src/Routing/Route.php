@@ -3,6 +3,10 @@
 namespace Rumi\Routing;
 
 use Closure;
+use Rumi\App;
+use Rumi\Container\Container;
+use Rumi\Http\HttpMethod;
+use Rumi\Http\Middleware;
 
 class Route{
 
@@ -10,6 +14,7 @@ class Route{
   protected string $regex;
   protected Closure $handler;
   protected array $parameters = [];
+  protected array $middlewares = [];
   public function __construct(string $path, Closure $handler){
     $this->path = $path;
     $this->handler = $handler;
@@ -40,6 +45,30 @@ class Route{
     return array_combine($this->parameters, $arguments);  
   }
 
+  public function middlewares():array{
+    return $this->middlewares;
+  }
+
+  public function hasMiddlewares():bool{
+    return count($this->middlewares) > 0;
+  }
+
+  public function setMiddleware(array $middlewares):self{
+    $this->middlewares = array_map(fn($middleware) => new $middleware(), $middlewares);
+    return $this;
+  }
+
+  // public function removeMiddlewares(array $middlewares ):self{
+  //   $this->middlewares = array_diff($this->middlewares, $middlewares);
+  //   return $this;
+  // }
+
+
+  public static function get(string $path, Closure $handler):Route{
+    return Container::resolve(App::class)->router->get($path, $handler);
+    
+  }
+
+}
 
   
-}

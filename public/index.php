@@ -2,12 +2,14 @@
 
 require_once '../vendor/autoload.php';
 
-use Rumi\App as RumiApp;
+use Rumi\App;
+use Rumi\Http\Middleware;
 use Rumi\Http\Request;
 use Rumi\Http\Response;
+use Rumi\Routing\Route;
 use Rumi\Server\PHPServer;
 
-$app = RumiApp::bootstrap();
+$app = App::bootstrap();
 
 
 $app->router->get('/', function(Request $request){
@@ -42,5 +44,20 @@ $app->router->post('/data/query/{user}', function(Request $request){
   $response = (Response::json($request->query()))->setStatus(200);
   return $response;
 });
+
+class AuthMiddleware implements Middleware{
+  public function handle(Request $request, Closure $next): Response{
+    if($request->headers('Authorization') !== '1234'){
+      $response = (Response::json(['message' => 'Not authorized']))->setStatus(401);
+      return $response;
+
+    }
+    return $next();
+  }
+}
+
+Route::get('/middlewares', fn ()=>Response::json(['message' => 'Hello middlewares']))->setMiddleware([
+  AuthMiddleware::class
+]);
 
 $app->run();

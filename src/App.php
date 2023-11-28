@@ -2,6 +2,7 @@
 
 namespace Rumi;
 
+use Rumi\Container\Container;
 use Rumi\Http\HttpNotFoundException;
 use Rumi\Http\Request;
 use Rumi\Http\Response;
@@ -17,7 +18,7 @@ class App{
 
   public static function bootstrap(){
 
-    $app = new App();
+    $app = Container::singleton(App::class);
     $app->router = new Router();
     $app->server = new PHPServer();
     $app->request = $app->server->getRequest();
@@ -27,11 +28,7 @@ class App{
   public function run(){
 
     try{
-      $route = $this->router->resolve($this->request);
-      $this->request->setParams($route->parseParameters($this->request->uri()));
-      $this->request->setRoute($route);
-      $handler = $route->handler();
-      $response = $handler($this->request);  
+      $response = $this->router->resolve($this->request);  
       $this->server->send_response($response);
     } catch(HttpNotFoundException $e){
       $response = Response::text('Not found')->setStatus(404);

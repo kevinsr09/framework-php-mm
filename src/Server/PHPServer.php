@@ -15,8 +15,8 @@ class PHPServer implements Server{
       ->setUri(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH))
       ->setMethod(HttpMethod::from($_SERVER['REQUEST_METHOD']))
       ->setData($_POST)
-      ->setQuery($_GET);
-
+      ->setQuery($_GET)
+      ->setHeaders(getallheaders());
   }
 
 

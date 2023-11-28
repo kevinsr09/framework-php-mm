@@ -6,6 +6,7 @@ use Closure;
 use Rumi\Http\HttpMethod;
 use Rumi\Http\HttpNotFoundException;
 use Rumi\Http\Request;
+use Rumi\Http\Response;
 
 class Router{
   protected array $routes = [];
@@ -18,35 +19,47 @@ class Router{
     }
   }
 
-  public function register(HttpMethod $method, string $path, Closure $handler){
-    $this->routes[$method->value][] = new Route($path, $handler);
-
+  public function register(HttpMethod $method, string $path, Closure $handler):Route{
+    return $this->routes[$method->value][] = new Route($path, $handler);
   }
-  public function resolve(Request $request): Route{
-
+  public function resolveRoute(Request $request): Route{
     foreach($this->routes[strtoupper($request->method()->value)] as $route){
       if($route->matches($request->uri())){
         return $route;
       }
     }
-    
     throw new HttpNotFoundException('Path not found');
   }
 
-  public function get(string $path, Closure $handler){
-    $this->register(HttpMethod::GET, $path, $handler);
+  public function resolve(Request $request): Response{
+    $route = $this->resolveRoute($request);
+    $request->setParams($route->parseParameters($request->uri()));
+    $request->setRoute($route);
+    $handler = $route->handler();
+    $response = $handler($request);
+
+    if($route->hasMiddlewares()){
+      foreach($route->middlewares() as $middleware){
+        $response = $middleware->handle($request, fn()=>Response::text('Middleware not implemented'));
+      }
+    }
+    return $response;
   }
-  public function post(string $path, Closure $handler){
-    $this->register(HttpMethod::POST, $path, $handler);
+
+  public function get(string $path, Closure $handler): Route{
+    return $this->register(HttpMethod::GET, $path, $handler);
   }
-  public function put(string $path, Closure $handler){
-    $this->register(HttpMethod::PUT, $path, $handler);
+  public function post(string $path, Closure $handler): Route{
+    return $this->register(HttpMethod::POST, $path, $handler);
   }
-  public function patch(string $path, Closure $handler){
-    $this->register(HttpMethod::PATCH, $path, $handler);
+  public function put(string $path, Closure $handler): Route{
+    return $this->register(HttpMethod::PUT, $path, $handler);
   }
-  public function delete(string $path, Closure $handler){
-    $this->register(HttpMethod::DELETE, $path, $handler);
+  public function patch(string $path, Closure $handler): Route{
+    return $this->register(HttpMethod::PATCH, $path, $handler);
+  }
+  public function delete(string $path, Closure $handler): Route{
+    return $this->register(HttpMethod::DELETE, $path, $handler);
   }
 
 

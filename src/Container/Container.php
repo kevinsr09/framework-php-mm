@@ -6,7 +6,7 @@ class Container{
 
   private static array $instances = [];
 
-  public function singleton(string $class): object{
+  public static function singleton(string $class): object{
     if(!array_key_exists($class, self::$instances)){
       self::$instances[$class] = new $class();
     }

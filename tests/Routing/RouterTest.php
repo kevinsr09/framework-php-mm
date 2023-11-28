@@ -22,7 +22,7 @@ class RouterTest extends TestCase {
     $path = '/test';
     $handler = fn()=> 'test';
     $router->get($path, $handler);
-    $responseRouter = $router->resolve($this->requestMock($path, HttpMethod::GET));    
+    $responseRouter = $router->resolveRoute($this->requestMock($path, HttpMethod::GET));    
     $this->assertEquals($handler, $responseRouter->handler());
     }
 
@@ -44,7 +44,7 @@ class RouterTest extends TestCase {
       $router->{strtolower($method->value)}($path, $handler);
     }
     foreach($routes as [$path, $method, $handler]){
-      $responseRouter = $router->resolve($this->requestMock($path, $method));
+      $responseRouter = $router->resolveRoute($this->requestMock($path, $method));
       $this->assertEquals($handler, $responseRouter->handler());
     }
   }
