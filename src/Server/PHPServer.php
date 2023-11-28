@@ -16,7 +16,8 @@ class PHPServer implements Server{
       ->setMethod(HttpMethod::from($_SERVER['REQUEST_METHOD']))
       ->setData($_POST)
       ->setQuery($_GET)
-      ->setHeaders(getallheaders());
+      ->setHeaders(getallheaders())
+      ->setHeaders(['Authorization' => '1234']);
   }
 
 

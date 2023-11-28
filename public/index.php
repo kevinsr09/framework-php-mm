@@ -52,12 +52,11 @@ class AuthMiddleware implements Middleware{
       return $response;
 
     }
-    return $next();
+    return $next($request);
   }
 }
 
-Route::get('/middlewares', fn ()=>Response::json(['message' => 'Hello middlewares']))->setMiddleware([
-  AuthMiddleware::class
-]);
+Route::get('/middlewares', fn ()=>Response::json(['message' => 'Hello middlewares']))
+  ->setMiddleware([AuthMiddleware::class]);
 
 $app->run();

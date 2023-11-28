@@ -33,17 +33,23 @@ class Router{
 
   public function resolve(Request $request): Response{
     $route = $this->resolveRoute($request);
-    $request->setParams($route->parseParameters($request->uri()));
     $request->setRoute($route);
+    $request->setParams($route->parseParameters($request->uri()));
     $handler = $route->handler();
-    $response = $handler($request);
 
     if($route->hasMiddlewares()){
-      foreach($route->middlewares() as $middleware){
-        $response = $middleware->handle($request, fn()=>Response::text('Middleware not implemented'));
-      }
+      return $this->runMiddleware($request, $route->middlewares(), $handler);
     }
-    return $response;
+
+    return $handler($request);
+  }
+
+  private function runMiddleware(Request $request, array $middlewares, Closure $target):Response{
+    if (count($middlewares) == 0) {
+      return $target($request);
+    }
+
+    return $middlewares[0]->handle($request, fn($request)=> $this->runMiddleware($request, array_slice($middlewares, 1), $target));
   }
 
   public function get(string $path, Closure $handler): Route{
