@@ -56,7 +56,15 @@ class AuthMiddleware implements Middleware{
   }
 }
 
+class HeaderMiddleware implements Middleware{
+  public function handle(Request $request, Closure $next): Response{
+      $response = $next($request);
+      $response->setHeader('Test-middleware', '2');
+      return $response;
+  }
+}
+
 Route::get('/middlewares', fn ()=>Response::json(['message' => 'Hello middlewares']))
-  ->setMiddleware([AuthMiddleware::class]);
+  ->setMiddleware([ AuthMiddleware::class,HeaderMiddleware::class ]);
 
 $app->run();

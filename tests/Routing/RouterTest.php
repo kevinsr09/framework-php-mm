@@ -1,9 +1,12 @@
 <?php
 
 namespace Rumi\Tests;
+
+use Closure;
 use PHPUnit\Framework\TestCase;
 use Rumi\Http\HttpMethod;
 use Rumi\Http\Request;
+use Rumi\Http\Response;
 use Rumi\Routing\Router;
 use Rumi\Server\Server;
 
@@ -47,6 +50,39 @@ class RouterTest extends TestCase {
       $responseRouter = $router->resolveRoute($this->requestMock($path, $method));
       $this->assertEquals($handler, $responseRouter->handler());
     }
+  }
+
+  public function test_resolve_baseic_route_with_middlewares_setData(){
+    
+    $uri = '/test/middlewares';
+    $method = HttpMethod::GET;
+    $data = ['user' => 'kevin'];
+    $router = new Router();
+    $handler = fn($request)=> Response::json($request->data());
+    $router->get($uri, $handler);
+
+    $request = ((new Request()))
+      ->setData($data)
+      ->setUri($uri)
+      ->setMethod($method);
+
+    $route = $router->resolveRoute($request);
+    
+    $middleware = new class {
+      public function handle(Request $request, Closure $next): Response{
+        $request->setData(['user'=> 'kevin']);
+        return $next($request);
+      }
+    };
+
+    $route->setMiddleware([$middleware::class]);
+
+    $response = $router->resolve($request);
+
+
+    $this->assertEquals('{"user":"kevin"}', $response->content());
+
+    
   }
 
   
