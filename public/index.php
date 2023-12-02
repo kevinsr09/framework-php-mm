@@ -68,6 +68,12 @@ Route::get('/middlewares', fn ()=>Response::json(['message' => 'Hello middleware
   ->setMiddleware([ AuthMiddleware::class,HeaderMiddleware::class ]);
 
 
-Route::get('/test/view', fn() => Response::view('home'));
+Route::get('/test/view', fn() => Response::view('home', ['user'=>['name'=> 'kevin']]));
+
+
+Route::get(
+    '/test/view/tailwind', 
+    fn() => Response::view('about', ['image'=> 'https://cdn-icons-png.flaticon.com/512/2175/2175188.png'], 'tailwind')
+  );
 
 $app->run();

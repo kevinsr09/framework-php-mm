@@ -72,8 +72,9 @@ class Response{
     return (new self())->setStatus(302)->setHeader('Location', $uri);
   }
 
-  public static function view(string $view): self{
+  public static function view(string $view, array $params = [], string $layout = null): self{
+
     return (new self())->setContentType('text/html')
-      ->setContent(Container::resolve(App::class)->view->render($view));
+      ->setContent(Container::resolve(App::class)->view->render($view, $params, $layout));
   }
 }

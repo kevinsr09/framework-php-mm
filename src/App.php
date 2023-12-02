@@ -25,7 +25,7 @@ class App{
     $app->router = new Router();
     $app->server = new PHPServer();
     $app->request = $app->server->getRequest();
-    $app->view = new RumiEngine();
+    $app->view = new RumiEngine(__DIR__ . "/../view");
     
     return $app;
   }
