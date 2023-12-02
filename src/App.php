@@ -8,12 +8,15 @@ use Rumi\Http\Request;
 use Rumi\Http\Response;
 use Rumi\Routing\Router;
 use Rumi\Server\PHPServer;
+use Rumi\View\RumiEngine;
+use Rumi\View\View;
 
 class App{
 
   public Router $router;
   public PHPServer $server;
   public Request $request;
+  public View $view;
 
 
   public static function bootstrap(){
@@ -22,6 +25,8 @@ class App{
     $app->router = new Router();
     $app->server = new PHPServer();
     $app->request = $app->server->getRequest();
+    $app->view = new RumiEngine();
+    
     return $app;
   }
 

@@ -2,6 +2,8 @@
 
 namespace Rumi\Http;
 
+use Rumi\App;
+use Rumi\Container\Container;
 
 class Response{
   protected int $status = 200;
@@ -68,5 +70,10 @@ class Response{
 
   public static function redirect(string $uri): self{
     return (new self())->setStatus(302)->setHeader('Location', $uri);
+  }
+
+  public static function view(string $view): self{
+    return (new self())->setContentType('text/html')
+      ->setContent(Container::resolve(App::class)->view->render($view));
   }
 }

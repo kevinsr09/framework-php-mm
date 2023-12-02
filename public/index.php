@@ -67,4 +67,7 @@ class HeaderMiddleware implements Middleware{
 Route::get('/middlewares', fn ()=>Response::json(['message' => 'Hello middlewares']))
   ->setMiddleware([ AuthMiddleware::class,HeaderMiddleware::class ]);
 
+
+Route::get('/test/view', fn() => Response::view('home'));
+
 $app->run();
