@@ -75,6 +75,6 @@ class Response{
   public static function view(string $view, array $params = [], string $layout = null): self{
 
     return (new self())->setContentType('text/html')
-      ->setContent(Container::resolve(App::class)->view->render($view, $params, $layout));
+      ->setContent(app()->view->render($view, $params, $layout));
   }
 }

@@ -58,14 +58,13 @@ class Route{
     return $this;
   }
 
-  // public function removeMiddlewares(array $middlewares ):self{
-  //   $this->middlewares = array_diff($this->middlewares, $middlewares);
-  //   return $this;
-  // }
-
 
   public static function get(string $path, Closure $handler):Route{
-    return Container::resolve(App::class)->router->get($path, $handler);
+    return app()->router->get($path, $handler);
+    
+  }
+  public static function post(string $path, Closure $handler):Route{
+    return app()->router->post($path, $handler);
     
   }
 

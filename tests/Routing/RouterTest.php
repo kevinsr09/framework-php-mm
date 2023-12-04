@@ -1,6 +1,6 @@
 <?php
 
-namespace Rumi\Tests;
+namespace Rumi\Tests\Routing;
 
 use Closure;
 use PHPUnit\Framework\TestCase;
@@ -8,7 +8,6 @@ use Rumi\Http\HttpMethod;
 use Rumi\Http\Request;
 use Rumi\Http\Response;
 use Rumi\Routing\Router;
-use Rumi\Server\Server;
 
 class RouterTest extends TestCase {
 

@@ -4,6 +4,7 @@ namespace Rumi\Http;
 
 use Rumi\Http\HttpMethod;
 use Rumi\Routing\Route;
+use Rumi\Validation\Validator;
 
 class Request{
 
@@ -86,5 +87,10 @@ class Request{
       $this->headers[strtolower($key)] = $value;
     }
     return $this;
+  }
+
+  public function validate(array $rules, array $messages = []): array{
+    $validator = new Validator($this->data());
+    return $validator->validate($rules, $messages);
   }
 }

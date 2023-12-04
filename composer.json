@@ -6,12 +6,22 @@
     "autoload": {
         "psr-4": {
             "Rumi\\": "src/"
-        }
+        },
+        "files": [
+            "src/Helpers/Http.php",
+            "src/Helpers/App.php",
+            "src/Helpers/Strings.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
             "Rumi\\Tests\\": "tests/"
-        }
+        },
+        "files": [
+            "src/Helpers/Http.php",
+            "src/Helpers/App.php",
+            "src/Helpers/Strings.php"
+        ]
     },
     "authors": [
         {
