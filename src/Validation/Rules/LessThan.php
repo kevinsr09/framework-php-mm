@@ -8,7 +8,7 @@ class LessThan implements ValidationRule {
     }
 
     public function message(): string {
-        return "Must be a numeric value less than 5";
+        return "Must be a numeric value less than {$this->lessThan}";
     }
 
     public function isValid($field, $data): bool {

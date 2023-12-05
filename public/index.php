@@ -87,8 +87,8 @@ Route::post('/validate/messages', fn(Request $req)=>json($req->validate([
 ])));
 
 Route::post('/validate', fn(Request $req)=>json($req->validate([
-  'id' => [Rule::required(), Rule::number()],
-  'email' => [Rule::required(), Rule::email()],
+  'id' => ["number:10","required", "number" ],
+  'email' => ["required", "email"],
 ])));
 
 

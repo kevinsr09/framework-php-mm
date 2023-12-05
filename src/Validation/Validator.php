@@ -2,7 +2,9 @@
 
 namespace Rumi\Validation;
 
+use ReflectionClass;
 use Rumi\Validation\Exceptions\ValidationException;
+use Rumi\Validation\Rules\ValidationRule;
 
 class Validator{
   public function __construct(protected array $data){
@@ -14,14 +16,19 @@ class Validator{
     $errors = [];
     
 
-    foreach($rules as $field => $rule){
+    foreach($rules as $field => $arrayRules){
       
-      if(!is_array($rule)){
-        $rule = [$rule];
+      if(!is_array($arrayRules)){
+        $arrayRules = [$arrayRules];
       }
       
 
-      foreach($rule as $rule){
+      foreach($arrayRules as $rule){
+
+        if(is_string($rule)){
+          $rule = Rule::from($rule);
+        }
+
         if($rule->isValid($field, $this->data)){
           $dataValidate[$field] = $this->data[$field];
         }else{
@@ -40,4 +47,7 @@ class Validator{
 
     return  $dataValidate;
   }
+
+
+
 }
