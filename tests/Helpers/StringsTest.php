@@ -76,4 +76,9 @@ class StringsTest extends TestCase{
       $this->assertEquals($expected, snake_case($test));
   }
 
+
+  public function test_email(){
+    $email = "Email";
+    $this->assertEquals("email", snake_case($email));
+  }
 }

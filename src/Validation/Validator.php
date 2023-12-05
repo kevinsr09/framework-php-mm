@@ -32,15 +32,15 @@ class Validator{
         if($rule->isValid($field, $this->data)){
           $dataValidate[$field] = $this->data[$field];
         }else{
-
-          $errors[$field][] = $messages[$field][$rule::class] ?? $rule->message();
+          
+          $errors[$field][] = $messages[$field][Rule::nameOf($rule)] ?? $rule->message();
         }
 
       }
       
     }
 
-
+    
     if(count($errors) > 0){
       throw new ValidationException($errors);
     }
