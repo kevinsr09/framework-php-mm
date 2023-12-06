@@ -43,30 +43,45 @@ class App{
   public function run(){
 
     try{
-      $response = $this->router->resolve($this->request);  
-      $this->server->send_response($response);
 
+      $this->terminate($this->router->resolve($this->request));
+      
     } catch(HTTPNotFoundException $e){
-      $response = Response::text('Not found')->setStatus(404);
-      $this->server->send_response($response);
-    
+      $this->terminate(Response::text('Not found')->setStatus(404));
+      
     }catch(ValidationException $e){
-      $response = json($e->errors())->setStatus(400);
-      $this->server->send_response($response);
-    
+      abort(json($e->errors()), 401);
+      
     }catch(RuleNotFountException $e){
-      $response = Response::text($e->getMessage())->setStatus(400);
-      $this->server->send_response($response);
-
+      $this->terminate(Response::text($e->getMessage())->setStatus(400));
+      
     }catch(RuleParseException $e){
-      $response = Response::text($e->getMessage())->setStatus(400);
-      $this->server->send_response($response);
+      $this->terminate(Response::text($e->getMessage())->setStatus(400));
     
     }catch(Throwable $e){
-      $response = json([ $e::class, $e->getMessage(), $e->getTrace()])->setStatus(500);
-      $this->server->send_response($response);
+      abort(json([ $e::class, $e->getMessage(), $e->getTrace()])->setStatus(500));
     }
+  }
 
+
+  public function abort(Response $response, int $code = 400){
+    $this->server->send_response($response->setStatus($code));
+  }
+
+  public function prepareNextRequest(){
+    if($this->request->method() === 'GET'){
+      session()->set('_previous', $this->request->uri());
+    }
+  }
+
+  public function terminate(Response $response){
+    $this->prepareNextRequest();
+    $this->server->send_response($response);
+  }
+
+  public function back(): Response{
+    return redirect(session()->get('_previous', '/'));
   }
 }
+
   

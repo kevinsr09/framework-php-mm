@@ -52,7 +52,7 @@ class Response{
 
   public function prepare(){
     if(!is_null($this->content)){
-      $this->headers['content-length'] = strval(strlen($this->content));
+      $this->headers['content-length'] = strval(strlen($this->content) + 1);
     }else{
       $this->removeHeader('content-length');
       $this->removeHeader('content-type');

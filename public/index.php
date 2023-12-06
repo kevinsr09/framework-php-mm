@@ -93,8 +93,7 @@ Route::post('/validate', fn(Request $req)=>json($req->validate([
 Route::get('/session', function(Request $request){
   return json([
       'name' => session()->get('name', "Rumi"),
-      'id' => session()->get('id', 'no tiene'),
-      '_flash' => session()->get('_flash', []), 
+      'session' => $_SESSION, 
     ])->setStatus(200);
 });
 

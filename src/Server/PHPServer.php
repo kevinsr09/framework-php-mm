@@ -33,7 +33,7 @@ class PHPServer implements Server{
     }
     
     if(!is_null($response->content())){
-      print($response->content());
+      print($response->content() . "\n");
     }
     
   }
