@@ -8,6 +8,8 @@ use Rumi\Http\Request;
 use Rumi\Http\Response;
 use Rumi\Routing\Router;
 use Rumi\Server\PHPServer;
+use Rumi\Session\PHPNativeSession;
+use Rumi\Session\Session;
 use Rumi\Validation\Exceptions\RuleNotFountException;
 use Rumi\Validation\Exceptions\RuleParseException;
 use Rumi\Validation\Exceptions\ValidationException;
@@ -22,6 +24,7 @@ class App{
   public PHPServer $server;
   public Request $request;
   public View $view;
+  public Session $session;
 
 
   public static function bootstrap(){
@@ -31,6 +34,7 @@ class App{
     $app->server = new PHPServer();
     $app->request = $app->server->getRequest();
     $app->view = new RumiEngine(__DIR__ . "/../view");
+    $app->session = new Session(new PHPNativeSession());
     Rule::loadDeafultRules();
     
     return $app;

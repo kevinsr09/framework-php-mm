@@ -7,7 +7,6 @@ use Rumi\Http\Middleware;
 use Rumi\Http\Request;
 use Rumi\Http\Response;
 use Rumi\Routing\Route;
-use Rumi\Server\PHPServer;
 use Rumi\Validation\Rule;
 
 $app = App::bootstrap();
@@ -90,6 +89,22 @@ Route::post('/validate', fn(Request $req)=>json($req->validate([
   'id' => ["number:10","required", "number" ],
   'email' => ["required", "email"],
 ])));
+
+Route::get('/session', function(Request $request){
+  return json([
+      'name' => session()->get('name', "Rumi"),
+      'id' => session()->get('id', 'no tiene'),
+      '_flash' => session()->get('_flash', []), 
+    ])->setStatus(200);
+});
+
+
+Route::get('/form', fn(Request $request) => view('form'));
+Route::post('/form', fn(Request $request) => json($request->validate([
+  'name' => ['required'],
+  'email' => ['required', 'email'],
+])));
+  
 
 
 $app->run();
