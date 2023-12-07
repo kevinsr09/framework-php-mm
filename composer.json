@@ -11,7 +11,8 @@
             "src/Helpers/http.php",
             "src/Helpers/app.php",
             "src/Helpers/strings.php",
-            "src/Helpers/session.php"
+            "src/Helpers/session.php",
+            "src/Helpers/database.php"
         ]
     },
     "autoload-dev": {
@@ -22,7 +23,9 @@
             "src/Helpers/http.php",
             "src/Helpers/app.php",
             "src/Helpers/strings.php",
-            "src/Helpers/session.php"
+            "src/Helpers/session.php",
+            "src/Helpers/database.php"
+
         ]
     },
     "authors": [

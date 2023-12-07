@@ -4,7 +4,7 @@ use Rumi\App;
 use Rumi\Container\Container;
 use Rumi\Http\Response;
 
-function app(){
+function app(): App{
   return Container::resolve(App::class);
 }
 

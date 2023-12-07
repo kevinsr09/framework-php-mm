@@ -2,7 +2,8 @@
 
 namespace Rumi;
 
-use PhpParser\ErrorHandler\Throwing;
+use Rumi\Database\Drivers\DatabaseDriver;
+use Rumi\Database\Drivers\PdoDriver;
 use Rumi\Http\Exceptions\HTTPNotFoundException;
 use Rumi\Http\HttpMethod;
 use Rumi\Http\Request;
@@ -26,6 +27,7 @@ class App{
   public Request $request;
   public View $view;
   public Session $session;
+  public DatabaseDriver $database; 
 
 
   public static function bootstrap(){
@@ -36,6 +38,8 @@ class App{
     $app->request = $app->server->getRequest();
     $app->view = new RumiEngine(__DIR__ . "/../view");
     $app->session = new Session(new PHPNativeSession());
+    $app->database = new PdoDriver();
+    $app ->database->connect('mysql', '127.0.0.1', 3306, 'mastermind', 'root', 'root');
     Rule::loadDeafultRules();
     
     return $app;
@@ -79,6 +83,8 @@ class App{
   public function terminate(Response $response){
     $this->prepareNextRequest();
     $this->server->send_response($response);
+    $this->database->close();
+    exit();
   }
 
   public function back(): Response{

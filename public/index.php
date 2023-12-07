@@ -105,5 +105,22 @@ Route::post('/form', fn(Request $request) => json($request->validate([
 ])));
   
 
+Route::get('/user', function(Request $request){
+
+  return json(DB()->statement('SELECT * FROM users'));
+});
+
+
+Route::post('/user', function(Request $request){
+
+  $data = $request->validate([
+    'name' => ['required'],
+    'email' => ['required', 'email'],
+  ]);
+
+  DB()->statement('INSERT INTO users (name, email) VALUES (?, ?)', [$data['name'], $data['email']]);
+
+  return Response::text('User created');
+});
 
 $app->run();
