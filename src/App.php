@@ -4,6 +4,7 @@ namespace Rumi;
 
 use Rumi\Database\Drivers\DatabaseDriver;
 use Rumi\Database\Drivers\PdoDriver;
+use Rumi\Database\Model;
 use Rumi\Http\Exceptions\HTTPNotFoundException;
 use Rumi\Http\HttpMethod;
 use Rumi\Http\Request;
@@ -19,6 +20,7 @@ use Rumi\Validation\Rule;
 use Rumi\View\RumiEngine;
 use Rumi\View\View;
 use Throwable;
+
 
 class App{
 
@@ -41,7 +43,7 @@ class App{
     $app->database = new PdoDriver();
     $app ->database->connect('mysql', '127.0.0.1', 3306, 'mastermind', 'root', 'root');
     Rule::loadDeafultRules();
-    
+    Model::setDriver($app->database);    
     return $app;
   }
   

@@ -3,6 +3,7 @@
 require_once '../vendor/autoload.php';
 
 use Rumi\App;
+use Rumi\Database\Model;
 use Rumi\Http\Middleware;
 use Rumi\Http\Request;
 use Rumi\Http\Response;
@@ -110,6 +111,8 @@ Route::get('/user', function(Request $request){
   return json(DB()->statement('SELECT * FROM users'));
 });
 
+class User extends Model{
+}
 
 Route::post('/user', function(Request $request){
 
@@ -118,9 +121,13 @@ Route::post('/user', function(Request $request){
     'email' => ['required', 'email'],
   ]);
 
-  DB()->statement('INSERT INTO users (name, email) VALUES (?, ?)', [$data['name'], $data['email']]);
+  $user = new User();
+  $user->name = $data['name'];
+  $user->email = $data['email'];
+  $user->save();
 
   return Response::text('User created');
 });
+
 
 $app->run();
