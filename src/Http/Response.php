@@ -59,6 +59,12 @@ class Response{
     }
   }
 
+  public function withErrors(array $errors): self{
+    session()->set('_errors', $errors);
+    session()->flash('_old', request()->data());
+    return $this;
+  }
+
   public static function json(array $data): self{
     return (new self())->setContentType('application/json')->setContent(json_encode($data));
 

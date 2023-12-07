@@ -4,6 +4,7 @@ namespace Rumi;
 
 use PhpParser\ErrorHandler\Throwing;
 use Rumi\Http\Exceptions\HTTPNotFoundException;
+use Rumi\Http\HttpMethod;
 use Rumi\Http\Request;
 use Rumi\Http\Response;
 use Rumi\Routing\Router;
@@ -39,8 +40,9 @@ class App{
     
     return $app;
   }
-
+  
   public function run(){
+    
 
     try{
 
@@ -50,7 +52,7 @@ class App{
       $this->terminate(Response::text('Not found')->setStatus(404));
       
     }catch(ValidationException $e){
-      abort(json($e->errors()), 401);
+      abort($this->back()->withErrors($e->errors()), 422);
       
     }catch(RuleNotFountException $e){
       $this->terminate(Response::text($e->getMessage())->setStatus(400));
@@ -59,17 +61,17 @@ class App{
       $this->terminate(Response::text($e->getMessage())->setStatus(400));
     
     }catch(Throwable $e){
-      abort(json([ $e::class, $e->getMessage(), $e->getTrace()])->setStatus(500));
+      abort(json([ $e::class, $e->getMessage(), $e->getTrace()]), 500);
     }
   }
 
 
   public function abort(Response $response, int $code = 400){
-    $this->server->send_response($response->setStatus($code));
+    $this->terminate($response->setStatus($code));
   }
 
   public function prepareNextRequest(){
-    if($this->request->method() === 'GET'){
+    if($this->request->method() == HttpMethod::GET){
       session()->set('_previous', $this->request->uri());
     }
   }

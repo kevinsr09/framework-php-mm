@@ -100,7 +100,7 @@ Route::get('/session', function(Request $request){
 
 Route::get('/form', fn(Request $request) => view('form'));
 Route::post('/form', fn(Request $request) => json($request->validate([
-  'name' => ['required'],
+  'name' => ['number'],
   'email' => ['required', 'email'],
 ])));
   

@@ -1,5 +1,6 @@
 <?php
 
+use Rumi\Http\Request;
 use Rumi\Http\Response;
 
 function json(array $data): Response{
@@ -13,4 +14,9 @@ function redirect(string $url): Response{
 
 function view(string $view, array $params = [], string $layout = null): Response{
   return Response::view($view, $params, $layout);
+}
+
+
+function request(): Request{
+  return app()->request;
 }
