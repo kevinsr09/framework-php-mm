@@ -93,4 +93,8 @@ class Request{
     $validator = new Validator($this->data());
     return $validator->validate($rules, $messages);
   }
+  public function validateParams(array $data, array $rules, array $messages = []): array{
+    $validator = new Validator($data);
+    return $validator->validate($rules, $messages);
+  }
 }

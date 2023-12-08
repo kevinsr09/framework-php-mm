@@ -41,7 +41,7 @@ class App{
     $app->view = new RumiEngine(__DIR__ . "/../view");
     $app->session = new Session(new PHPNativeSession());
     $app->database = new PdoDriver();
-    $app ->database->connect('mysql', '127.0.0.1', 3306, 'mastermind', 'root', 'root');
+    $app ->database->connect('mysql', '127.0.0.1', 3308, 'mastermind', 'root', 'root');
     Rule::loadDeafultRules();
     Model::setDriver($app->database);    
     return $app;

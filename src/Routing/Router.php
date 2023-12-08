@@ -3,8 +3,8 @@
 namespace Rumi\Routing;
 
 use Closure;
+use Rumi\Http\Exceptions\HTTPNotFoundException;
 use Rumi\Http\HttpMethod;
-use Rumi\Http\HttpNotFoundException;
 use Rumi\Http\Request;
 use Rumi\Http\Response;
 
@@ -25,10 +25,11 @@ class Router{
   public function resolveRoute(Request $request): Route{
     foreach($this->routes[strtoupper($request->method()->value)] as $route){
       if($route->matches($request->uri())){
+
         return $route;
       }
     }
-    throw new HttpNotFoundException('Path not found');
+    throw new HTTPNotFoundException('Path not found');
   }
 
   public function resolve(Request $request): Response{

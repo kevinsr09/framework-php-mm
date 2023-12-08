@@ -112,6 +112,7 @@ Route::get('/user', function(Request $request){
 });
 
 class User extends Model{
+  protected array $fillable = ['name', 'email'];
 }
 
 Route::post('/user', function(Request $request){
@@ -121,13 +122,24 @@ Route::post('/user', function(Request $request){
     'email' => ['required', 'email'],
   ]);
 
-  $user = new User();
-  $user->name = $data['name'];
-  $user->email = $data['email'];
-  $user->save();
-
-  return Response::text('User created');
+  return json(User::create($data)->toArray());
 });
 
+
+Route::get('/user/{id}', function(Request $request){
+  $params = $request->validateParams($request->params(), ['id'=>['required', 'number']]);
+  return json(User::find($params['id']));
+});
+
+Route::get('/firts', function(){
+  return json(User::first());
+});
+Route::post('/where', function(Request $request){
+
+  $key = array_keys($request->data())[0];
+
+
+  return json(User::where($key, $request->data()[$key]));
+});
 
 $app->run();
