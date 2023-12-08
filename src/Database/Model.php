@@ -14,6 +14,7 @@ abstract class Model{
   protected array $fillable = [];
   protected array $attributes = [];
   protected array $hidden = [];
+  protected bool $timestamps = false;
 
   public static DatabaseDriver $dirver;
   public static function setDriver(DatabaseDriver $driver){
@@ -36,6 +37,10 @@ abstract class Model{
   }
 
   public function save(): static{
+
+    if($this->timestamps){
+      $this->attributes["created_at"] = date("Y-m-d H:i:s");
+    }
     $keys = implode(",",array_keys($this->attributes));
     $stringValues = implode(",", array_fill(0, count(array_keys($this->attributes)),"?"));
     $this::$dirver->statement("INSERT INTO $this->table ({$keys}) VALUES ({$stringValues})", array_values($this->attributes));
