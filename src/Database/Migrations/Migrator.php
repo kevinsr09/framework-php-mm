@@ -27,34 +27,6 @@ class Migrator{
     )");
   }
 
-  public function migrate(): void {
-    $this->createTableMigrationsIFNotExists();
-    $migrationsDB = $this->driver->statement("SELECT * FROM migrations");
-    $migrations = glob("$this->migrationsDirectory/*.php");
-    if(count($migrationsDB) >= count($migrations)){
-      $this->log("all migrations already executed");
-      return;
-    }
-
-    $migrations = array_slice($migrations, count($migrationsDB));
-
-    foreach($migrations as $file){
-
-      $name = basename($file);
-      $migration = require_once $file;
-      try{
-        $migration->up();
-        $this->driver->statement("INSERT INTO migrations (migration) VALUES (?)", [
-          $name
-        ]);
-        $this->log("migration: $name successful");
-
-      }catch(PDOException $e){
-        $this->log("migration: $name failed");
-        $this->log($e->getMessage());
-      }
-    }
-  }
   public function make(string $option): void {
     
     $option = snake_case($option);
@@ -92,6 +64,77 @@ class Migrator{
     $fileName = sprintf("%s_%06d_%s.php",$date, $id, $option);
     file_put_contents($this->migrationsDirectory . "/{$fileName}", $template);
   }
+  public function migrate(): void {
+    $this->createTableMigrationsIFNotExists();
+    $migrationsDB = $this->driver->statement("SELECT * FROM migrations");
+    $migrations = glob("$this->migrationsDirectory/*.php");
+    if(count($migrationsDB) >= count($migrations)){
+      $this->log("all migrations already executed");
+      return;
+    }
+
+    $migrations = array_slice($migrations, count($migrationsDB));
+
+    foreach($migrations as $file){
+
+      $name = basename($file);
+      $migration = require_once $file;
+      try{
+        $migration->up();
+        $this->driver->statement("INSERT INTO migrations (migration) VALUES (?)", [
+          $name
+        ]);
+        $this->log("migration: $name successful");
+
+      }catch(PDOException $e){
+        $this->log("migration: $name failed");
+        $this->log($e->getMessage());
+      }
+    }
+  }
+
+  public function rollback(int $steps = null): void {
+
+    $this->createTableMigrationsIFNotExists();
+    $migrationsPending = $this->driver->statement("SELECT * FROM migrations"); 
+    $migrations = glob("$this->migrationsDirectory/*.php");
+    
+    if(count($migrationsPending) == 0){
+      $this->log("all migrations already executed");
+      return;
+    }
+    
+    if($steps == null){
+      $steps = count($migrationsPending);
+    }
+    
+    $migrations = array_slice(array_reverse($migrations), -count($migrationsPending));
+    
+
+    foreach($migrations as $file){
+
+      $name = basename($file);
+      $migration = require_once $file;
+      try{
+
+        $migration->down();
+        $this->driver->statement("DELETE FROM migrations WHERE migration = ?", [
+          $name
+        ]);
+        $this->log("migration: $name successful");
+
+        if(--$steps == 0){
+          break;
+        }
+      
+      }catch(PDOException $e){
+        $this->log("migration: $name failed");
+        $this->log($e->getMessage());
+      }
+
+    }
+  }
+
   
   public function log(string $message): void {
     print("$message" . PHP_EOL);

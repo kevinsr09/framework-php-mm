@@ -9,7 +9,7 @@ return new class() implements Migration {
   }
 
   public function down(): void {
-      DB::statement('ALTER TABLE users ADD COLUMN id INT AUTO_INCREMENT PRIMARY KEY');
+      DB::statement('ALTER TABLE users DROP COLUMN name');
   }
 
 };
