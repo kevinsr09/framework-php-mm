@@ -19,6 +19,7 @@ class PdoDriver implements DatabaseDriver{
   ){
 
     $dns = "$protocol:host=$host;port=$port;dbname=$database";
+
     $this->pdo = new PDO($dns, $user, $password);
     $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);  
 

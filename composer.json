@@ -39,5 +39,8 @@
     },
     "scripts": {
         "test": "phpunit --color=always --testdox -v tests/"
+    },
+    "require": {
+        "vlucas/phpdotenv": "^5.6"
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Rumi;
 
+use Dotenv\Dotenv;
+use Rumi\Config\Config;
 use Rumi\Database\Drivers\DatabaseDriver;
 use Rumi\Database\Drivers\PdoDriver;
 use Rumi\Database\Model;
@@ -24,6 +26,8 @@ use Throwable;
 
 class App{
 
+  public static string $rootDirectory;
+
   public Router $router;
   public PHPServer $server;
   public Request $request;
@@ -32,16 +36,22 @@ class App{
   public DatabaseDriver $database; 
 
 
-  public static function bootstrap(){
+  public static function bootstrap(string $rootDirectory): App{
 
+    self::$rootDirectory = $rootDirectory;
+
+    Dotenv::createImmutable($rootDirectory)->load();
+    Config::load($rootDirectory . '/config');
     $app = singleton(App::class);
     $app->router = new Router();
     $app->server = new PHPServer();
     $app->request = $app->server->getRequest();
-    $app->view = new RumiEngine(__DIR__ . "/../view");
+    $app->view = new RumiEngine(resoursesDirectory() . '/views');
     $app->session = new Session(new PHPNativeSession());
     $app->database = singleton(DatabaseDriver::class, PdoDriver::class);
-    $app ->database->connect('mysql', '127.0.0.1', 3308, 'mastermind', 'root', 'root');
+
+
+    $app ->database->connect(Config::get('database.connection', 'mysql'), Config::get('database.host', '127.0.0.1'), Config::get('database.port', 3309), Config::get('database.database', 'mastermind'), Config::get('database.username', 'root'), Config::get('database.password', ''));
     Rule::loadDeafultRules();
     Model::setDriver($app->database);    
     return $app;

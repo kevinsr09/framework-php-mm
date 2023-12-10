@@ -10,7 +10,7 @@ use Rumi\Http\Response;
 use Rumi\Routing\Route;
 use Rumi\Validation\Rule;
 
-$app = App::bootstrap();
+$app = App::bootstrap(__DIR__ . '/..');
 
 
 $app->router->get('/', function(Request $request){
@@ -140,6 +140,10 @@ Route::post('/where', function(Request $request){
 
 
   return json(User::where($key, $request->data()[$key]));
+});
+
+Route::get('/envs', function(){
+  return Response::text(env('DB_PASSWORD'));
 });
 
 $app->run();

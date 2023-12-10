@@ -18,3 +18,12 @@ function resolve(string $class){
 function abort(Response $response, int $code = 400){
   app()->abort($response, $code);
 }
+
+function env(string $key, mixed $default = null): mixed{
+  return $_ENV[$key] ?? $default;
+}
+
+function resoursesDirectory(): string{
+  return App::$rootDirectory . '/resources';
+}
+
