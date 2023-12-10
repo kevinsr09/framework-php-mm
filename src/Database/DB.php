@@ -2,9 +2,11 @@
 
 namespace Rumi\Database;
 
+use Rumi\Database\Drivers\DatabaseDriver;
+
 class DB{
 
   public static function statement(string $sql, array $params = []){
-    return app()->database->statement($sql, $params);
+    return app(DatabaseDriver::class)->statement($sql, $params);
   }
 }

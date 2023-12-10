@@ -4,12 +4,12 @@ use Rumi\App;
 use Rumi\Container\Container;
 use Rumi\Http\Response;
 
-function app(): App{
-  return Container::resolve(App::class);
+function app(string $class = App::class): object{
+  return Container::resolve($class);
 }
 
-function singleton(string $class){
-  return Container::singleton($class);
+function singleton(string $class, string|callable|null $build = null){
+  return Container::singleton($class, $build);
 }
 function resolve(string $class){
   return Container::resolve($class);
