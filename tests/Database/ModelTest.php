@@ -3,7 +3,6 @@
 
 namespace Rumi\Tests\Database;
 
-use DateTime;
 use PDOException;
 use PHPUnit\Framework\TestCase;
 use Rumi\Database\Drivers\DatabaseDriver;
@@ -22,8 +21,7 @@ class ModelTest extends TestCase{
     $this->driver = new PdoDriver();
     Model::setDriver($this->driver);
     try{
-
-      $this->driver->connect('mysql', '127.0.0.1', 3308, 'db_test', 'root', 'root');
+      $this->driver->connect('mysql', '127.0.0.1', 3306, 'db_test', 'root', 'root');
     }catch(PDOException $e){
       print_r($e->getMessage());
     }

@@ -5,7 +5,6 @@ namespace Rumi;
 use Dotenv\Dotenv;
 use Rumi\Config\Config;
 use Rumi\Database\Drivers\DatabaseDriver;
-use Rumi\Database\Drivers\PdoDriver;
 use Rumi\Database\Model;
 use Rumi\Http\Exceptions\HTTPNotFoundException;
 use Rumi\Http\HttpMethod;
@@ -13,25 +12,21 @@ use Rumi\Http\Request;
 use Rumi\Http\Response;
 use Rumi\Routing\Router;
 use Rumi\Server\PHPServer;
-use Rumi\Session\PHPNativeSession;
+use Rumi\Server\Server;
 use Rumi\Session\Session;
+use Rumi\Session\SessionStorage;
 use Rumi\Validation\Exceptions\RuleNotFountException;
 use Rumi\Validation\Exceptions\RuleParseException;
 use Rumi\Validation\Exceptions\ValidationException;
-use Rumi\Validation\Rule;
-use Rumi\View\RumiEngine;
-use Rumi\View\View;
 use Throwable;
 
 
 class App{
 
   public static string $rootDirectory;
-
   public Router $router;
   public PHPServer $server;
   public Request $request;
-  public View $view;
   public Session $session;
   public DatabaseDriver $database; 
 
@@ -40,22 +35,71 @@ class App{
 
     self::$rootDirectory = $rootDirectory;
 
-    Dotenv::createImmutable($rootDirectory)->load();
-    Config::load($rootDirectory . '/config');
+
     $app = singleton(App::class);
-    $app->router = new Router();
-    $app->server = new PHPServer();
-    $app->request = $app->server->getRequest();
-    $app->view = new RumiEngine(resoursesDirectory() . '/views');
-    $app->session = new Session(new PHPNativeSession());
-    $app->database = singleton(DatabaseDriver::class, PdoDriver::class);
+
+    
+     $app
+      ->loadConfig();
+      $app
+      ->loadServicesProviders('boot');
+      
+    $app
+      ->loadHttpHandlers();
+
+    $app
+      ->setupDatabaseConnection();
 
 
-    $app ->database->connect(Config::get('database.connection', 'mysql'), Config::get('database.host', '127.0.0.1'), Config::get('database.port', 3309), Config::get('database.database', 'mastermind'), Config::get('database.username', 'root'), Config::get('database.password', ''));
-    Rule::loadDeafultRules();
-    Model::setDriver($app->database);    
-    return $app;
+    $app
+      ->loadServicesProviders('runtime');    
+
+      return $app;
+    }
+    
+    
+    protected function loadConfig(): self{
+      Dotenv::createImmutable(self::$rootDirectory)->load();
+      Config::load(self::$rootDirectory . '/config');
+      return $this;
+    }
+    
+    protected function loadServicesProviders(string $key): self{
+      foreach((config("providers.$key", [])) as $providerClass){
+
+        $provider = new $providerClass();
+        $provider->registerServices();
+      }
+      
+      return $this;
+    }
+    protected function loadHttpHandlers(): self{
+      
+      $this->router = singleton(Router::class);
+      $this->server = app(Server::class);
+      $this->request = $this->server->getRequest();
+      $this->session = new Session(app(SessionStorage::class));
+
+      return $this;
+    }
+    
+    public function setupDatabaseConnection(): self{
+      
+      $this->database = app(DatabaseDriver::class);
+      $this->database->connect(
+        config('database.connection', 'mysql'), 
+        config('database.host', '127.0.0.1'), 
+        config('database.port', 3306), 
+        config('database.database', 'mastermind'), 
+        config('database.username', 'root'), 
+        config('database.password', '')
+      );
+      
+      Model::setDriver($this->database);  
+
+      return $this;
   }
+  
   
   public function run(){
     
