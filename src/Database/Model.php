@@ -2,7 +2,6 @@
 
 namespace Rumi\Database;
 
-use Error;
 use Exception;
 use ReflectionClass;
 use Rumi\Database\Drivers\DatabaseDriver;
@@ -14,7 +13,7 @@ abstract class Model{
   protected array $fillable = [];
   protected array $attributes = [];
   protected array $hidden = [];
-  protected bool $timestamps = false;
+  protected bool $timestamps = true;
 
   public static DatabaseDriver $dirver;
   public static function setDriver(DatabaseDriver $driver){
@@ -34,6 +33,18 @@ abstract class Model{
 
   public function __get($name): mixed{
     return $this->attributes[$name] ?? null;
+  }
+
+  public function __sleep(): array{
+    
+    foreach($this->hidden as $hide){
+      if(array_key_exists($hide, $this->attributes)){
+        unset($this->attributes[$hide]);
+      }
+    }
+    
+    return array_keys(get_object_vars($this));
+
   }
 
   public function save(): static{

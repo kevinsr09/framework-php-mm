@@ -1,6 +1,8 @@
 <?php
 
+use App\Providers\RouteServiceProvider;
 use App\Providers\RuleServiceProvider;
+use Rumi\Providers\AuthServiveProvider;
 use Rumi\Providers\DatabaseServiceProvider;
 use Rumi\Providers\ServerServiceProvider;
 use Rumi\Providers\SessionStorageServiceProvider;
@@ -12,10 +14,12 @@ return [
     ServerServiceProvider::class,
     SessionStorageServiceProvider::class,
     ViewServiceProvider::class,
+    AuthServiveProvider::class,
   ],
 
   'runtime' => [
     RuleServiceProvider::class,
+    RouteServiceProvider::class,
   ],
 
 

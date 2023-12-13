@@ -68,6 +68,14 @@ class Route{
     
   }
 
+  public static function load(string $routesDirectory){
+
+    $routes = glob($routesDirectory . "/*.php");
+    foreach($routes as $route){
+      require_once $route;
+    }
+  }
+
 }
 
   

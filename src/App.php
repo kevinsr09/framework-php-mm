@@ -36,22 +36,11 @@ class App{
     self::$rootDirectory = $rootDirectory;
 
 
-    $app = singleton(App::class);
-
-    
-     $app
-      ->loadConfig();
-      $app
-      ->loadServicesProviders('boot');
-      
-    $app
-      ->loadHttpHandlers();
-
-    $app
-      ->setupDatabaseConnection();
-
-
-    $app
+    $app = singleton(App::class)
+      ->loadConfig()
+      ->loadServicesProviders('boot')
+      ->loadHttpHandlers()
+      ->setupDatabaseConnection()
       ->loadServicesProviders('runtime');    
 
       return $app;
@@ -137,6 +126,7 @@ class App{
   }
 
   public function terminate(Response $response){
+    
     $this->prepareNextRequest();
     $this->server->send_response($response);
     $this->database->close();

@@ -4,6 +4,7 @@ namespace Rumi\Http;
 
 use Rumi\App;
 use Rumi\Container\Container;
+use Rumi\View\View;
 
 class Response{
   protected int $status = 200;
@@ -81,6 +82,6 @@ class Response{
   public static function view(string $view, array $params = [], string $layout = null): self{
 
     return (new self())->setContentType('text/html')
-      ->setContent(app()->view->render($view, $params, $layout));
+      ->setContent(app(View::class)->render($view, $params, $layout));
   }
 }

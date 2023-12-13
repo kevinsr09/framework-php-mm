@@ -15,7 +15,8 @@
             "src/Helpers/strings.php",
             "src/Helpers/session.php",
             "src/Helpers/database.php",
-            "src/Helpers/config.php"
+            "src/Helpers/config.php",
+            "src/Helpers/auth.php"
         ]
     },
     "autoload-dev": {
@@ -28,7 +29,9 @@
             "src/Helpers/strings.php",
             "src/Helpers/session.php",
             "src/Helpers/database.php",
-            "src/Helpers/config.php"
+            "src/Helpers/config.php",
+            "src/Helpers/auth.php"
+
 
 
         ]

@@ -24,6 +24,6 @@ function env(string $key, mixed $default = null): mixed{
 }
 
 function resoursesDirectory(): string{
-  return App::$rootDirectory . '/resources';
+  return App::$rootDirectory . '/resourses';
 }
 
