@@ -27,3 +27,9 @@ function resoursesDirectory(): string{
   return App::$rootDirectory . '/resourses';
 }
 
+
+function back(){
+
+  return app()->back();
+
+}
