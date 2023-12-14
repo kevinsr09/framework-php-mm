@@ -31,8 +31,10 @@ Route::post('/register', function (Request $request) {
     'confirm_password' => 'required'
   ]);
 
+
   if($data['password'] !== $data['confirm_password']){
-    back()->withErrors([
+
+    return back()->withErrors([
       'confirm_password' => 'Passwords do not match'
     ]);
   }

@@ -7,7 +7,7 @@ use Rumi\Database\Drivers\PdoDriver;
 use Rumi\Database\Migrations\Migrator;
 
 $driver = singleton(DatabaseDriver::class, PdoDriver::class);
-$driver->connect('mysql', '127.0.0.1', 3306, 'mastermind', 'root', 'root');
+$driver->connect('mysql', '127.0.0.1', 3308, 'mastermind', 'root', 'root');
 
 $migrator = new Migrator(
   __DIR__ . '/database/migrations',

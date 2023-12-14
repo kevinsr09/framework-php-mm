@@ -2,7 +2,6 @@
 
 namespace Rumi\Database\Drivers;
 
-use Exception;
 use PDO;
 
 class PdoDriver implements DatabaseDriver{
