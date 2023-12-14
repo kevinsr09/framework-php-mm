@@ -23,8 +23,7 @@
     <label class="form-label">Confirmar Password</label>
     <input value="<?= old('confirm_password') ?>" name="confirm_password" type="password" class="form-control">
     <div class="text-danger"><?= error('confirm_password') ?></div>
-    <div class="text-danger"><?= error('confirm_password') ?></div>
   </div>
-
+  
   <button type="submit" class="btn btn-primary">Enviar</button>
 </form>

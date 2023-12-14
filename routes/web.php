@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\User;
 use Rumi\App;
+use Rumi\Crypto\Hasher;
 use Rumi\Http\Request;
 use Rumi\Http\Response;
 use Rumi\Routing\Route;
@@ -8,7 +10,7 @@ use Rumi\Validation\Exceptions\ValidationException;
 
 Route::get('/', function (Request $request) {
    
-  return Response::text('welcome');
+  return Response::json(get_object_vars(auth()->name));
   
 });
 
@@ -38,5 +40,12 @@ Route::post('/register', function (Request $request) {
       'confirm_password' => 'Passwords do not match'
     ]);
   }
-  return json($data);
+
+
+  User::create($data);
+
+  $user = User::firstWhere('email', $data['email']);
+  $user->login();
+
+  return redirect('/');
 });

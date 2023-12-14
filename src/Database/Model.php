@@ -59,6 +59,15 @@ abstract class Model{
     return $this;
   }
 
+  public function setAttributes(array $attributes): static{
+
+    foreach($attributes as $key => $value){
+        $this->attributes[$key] = $value;
+    }
+    
+    return $this;
+  }
+
   public function massAssing(array $attributes): static{
     if(count($attributes) == 0){
       throw new Exception("Attributes cannot be empty");
@@ -72,8 +81,9 @@ abstract class Model{
 
     return $this;
   }
-  public static function create(array $attributes){
+  public static function create(array $attributes): static{
     return (new static())->massAssing($attributes)->save();
+
   }
 
   public function toArray(): array{
@@ -111,6 +121,16 @@ abstract class Model{
     }
 
     return $rows;
+  }
+  public static function firstWhere(string $key, string|int $value): static{
+    $model = new static();
+    $rows = $model::$dirver->statement("SELECT * FROM {$model->table} WHERE {$key} = ? LIMIT 1", [$value]);
+
+    if(count($rows) == 0){
+      return [];
+    }
+
+    return $model->setAttributes($rows[0]);
   }
   
 }

@@ -7,14 +7,13 @@ function session(): Session{
 }
 
 
-function errors(){
+function errors(): array{
   return session()->get('_errors', []);
 }
 
 
-function error(string $key) : string{
-  $erros = errors()[$key] ?? [];
-  return $erros[0] ?? '';
+function error(string $key) : mixed{
+  return errors()[$key] ?? null;
 }
 
 
