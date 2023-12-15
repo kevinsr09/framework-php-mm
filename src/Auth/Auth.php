@@ -12,6 +12,6 @@ class Auth {
   }
 
   public static function isGuest(): bool{
-    return is_null(self::user());
+    return !is_null(self::user());
   }
 }
