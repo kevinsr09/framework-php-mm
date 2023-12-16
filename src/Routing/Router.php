@@ -19,7 +19,7 @@ class Router{
     }
   }
 
-  public function register(HttpMethod $method, string $path, Closure $handler):Route{
+  public function register(HttpMethod $method, string $path, Closure|array $handler):Route{
     return $this->routes[$method->value][] = new Route($path, $handler);
   }
   public function resolveRoute(Request $request): Route{
@@ -42,34 +42,37 @@ class Router{
     $request->setParams($route->parseParameters($request->uri()));
     $handler = $route->handler();
 
-    if($route->hasMiddlewares()){
-      return $this->runMiddleware($request, $route->middlewares(), $handler);
+
+    if(is_array($handler)){
+      $controller = new $handler[0];
+      $handler[0] = $controller;
     }
 
-    return $handler($request);
+    return $this->runMiddleware($request, $route->middlewares(), fn() => call_user_func($handler, $request));
+
   }
 
   private function runMiddleware(Request $request, array $middlewares, Closure $target):Response{
     if (count($middlewares) == 0) {
-      return $target($request);
+      return $target();
     }
 
     return $middlewares[0]->handle($request, fn($request)=> $this->runMiddleware($request, array_slice($middlewares, 1), $target));
   }
 
-  public function get(string $path, Closure $handler): Route{
+  public function get(string $path, Closure|array $handler): Route{
     return $this->register(HttpMethod::GET, $path, $handler);
   }
-  public function post(string $path, Closure $handler): Route{
+  public function post(string $path, Closure|array $handler): Route{
     return $this->register(HttpMethod::POST, $path, $handler);
   }
-  public function put(string $path, Closure $handler): Route{
+  public function put(string $path, Closure|array $handler): Route{
     return $this->register(HttpMethod::PUT, $path, $handler);
   }
-  public function patch(string $path, Closure $handler): Route{
+  public function patch(string $path, Closure|array $handler): Route{
     return $this->register(HttpMethod::PATCH, $path, $handler);
   }
-  public function delete(string $path, Closure $handler): Route{
+  public function delete(string $path, Closure|array $handler): Route{
     return $this->register(HttpMethod::DELETE, $path, $handler);
   }
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Controllers\RegisterController;
 use App\Models\User;
 use Rumi\App;
 use Rumi\Crypto\Hasher;
@@ -19,35 +20,9 @@ Route::get('/', function (Request $request) {
   }
 });
 
-Route::get('/register', function (Request $request) {
-  return view('auth/register');
-});
+Route::get('/register', [RegisterController::class, 'create'] );
 
-Route::post('/register', function (Request $request) {
-
-  $data = $request->validate([
-    'name' => 'required',
-    'email' => ['required','email'],
-    'password' => 'required',
-    'confirm_password' => 'required'
-  ]);
-
-
-  if($data['password'] !== $data['confirm_password']){
-
-    return back()->withErrors([
-      'confirm_password' => 'Passwords do not match'
-    ]);
-  }
-
-
-  User::create($data);
-
-  $user = User::firstWhere('email', $data['email']);
-  $user->login();
-
-  return redirect('/');
-});
+Route::post('/register', [RegisterController::class, 'store'] );
 
 
 Route::get('/login', function (Request $request) {

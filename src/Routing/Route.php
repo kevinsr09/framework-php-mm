@@ -3,19 +3,16 @@
 namespace Rumi\Routing;
 
 use Closure;
-use Rumi\App;
-use Rumi\Container\Container;
-use Rumi\Http\HttpMethod;
-use Rumi\Http\Middleware;
+
 
 class Route{
 
   protected string $path;
   protected string $regex;
-  protected Closure $handler;
+  protected Closure|array $handler;
   protected array $parameters = [];
   protected array $middlewares = [];
-  public function __construct(string $path, Closure $handler){
+  public function __construct(string $path, Closure|array $handler){
     $this->path = $path;
     $this->handler = $handler;
     $this->regex = preg_replace('/\{([a-zA-Z]+)\}/', '([a-zA-Z0-9]+)', $path);
@@ -59,11 +56,11 @@ class Route{
   }
 
 
-  public static function get(string $path, Closure $handler):Route{
+  public static function get(string $path, Closure|array $handler):Route{
     return app()->router->get($path, $handler);
     
   }
-  public static function post(string $path, Closure $handler):Route{
+  public static function post(string $path, Closure|array $handler):Route{
     return app()->router->post($path, $handler);
     
   }
