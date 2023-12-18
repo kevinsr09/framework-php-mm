@@ -5,6 +5,7 @@ namespace Rumi\Database;
 use Exception;
 use ReflectionClass;
 use Rumi\Database\Drivers\DatabaseDriver;
+use Throwable;
 
 abstract class Model{
 
@@ -91,16 +92,16 @@ abstract class Model{
   }
 
 
-  public static function find(int $id): array{
+  public static function find(int $id): static{
     $model = new static();
-    $rows = $model::$dirver->statement("SELECT * FROM {$model->table} WHERE {$model->primaryKey} = ?", [$id]);
+
+    $rows = $model::$dirver->statement("SELECT * FROM {$model->table} WHERE {$model->primaryKey} = ? LIMIT 1", [$id]);
 
     if(count($rows) == 0){
-      return [];
+      return null;
     }
 
-
-    return $rows[0];
+    return $model->setAttributes($rows[0]);
   }
   public static function first(): array{
     $model = new static();

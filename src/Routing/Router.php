@@ -3,6 +3,7 @@
 namespace Rumi\Routing;
 
 use Closure;
+use Rumi\Container\DependencyInjection;
 use Rumi\Http\Exceptions\HTTPNotFoundException;
 use Rumi\Http\HttpMethod;
 use Rumi\Http\Request;
@@ -48,7 +49,15 @@ class Router{
       $handler[0] = $controller;
     }
 
-    return $this->runMiddleware($request, $route->middlewares(), fn() => call_user_func($handler, $request));
+    try{
+
+      $params = DependencyInjection::resolve($handler, $request->params());
+    }catch(HTTPNotFoundException $e){
+      throw $e;
+    }
+
+
+    return $this->runMiddleware($request, $route->middlewares(), fn() => call_user_func($handler, ...$params));
 
   }
 

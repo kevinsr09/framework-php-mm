@@ -9,7 +9,7 @@ use Rumi\Http\Response;
 use Rumi\Routing\Route;
 use Rumi\Validation\Exceptions\ValidationException;
 
-Route::get('/', function (Request $request) {
+Route::get('/', function () {
    
   if(isGuest()){
 
@@ -25,7 +25,7 @@ Route::get('/register', [RegisterController::class, 'create'] );
 Route::post('/register', [RegisterController::class, 'store'] );
 
 
-Route::get('/login', function (Request $request) {
+Route::get('/login', function () {
 
   return view('auth/login');
 });
@@ -55,10 +55,16 @@ Route::post('/login', function (Request $request) {
 });
 
 
-Route::get('/logout', function (Request $request) {
+Route::get('/logout', function () {
 
   auth()?->logout();
   return redirect('/');
+});
+
+
+Route::get('/user/{user}', function (User $user) {
+
+  return json($user->toArray());
 });
 
 

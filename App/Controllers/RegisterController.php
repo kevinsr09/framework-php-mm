@@ -14,7 +14,7 @@ class RegisterController extends Controller
     return view('auth/register');
   }
 
-  public function store(Request $request) {
+  public function store(Request $request, Hasher $hasher){ 
 
     $data = $request->validate([
       'name' => 'required',
@@ -31,7 +31,7 @@ class RegisterController extends Controller
       ]);
     }
   
-    $data['password'] = app(Hasher::class)->hash($data['password']);
+    $data['password'] = $hasher->hash($data['password']);
     User::create($data);
   
     $user = User::firstWhere('email', $data['email']);
@@ -39,5 +39,4 @@ class RegisterController extends Controller
   
     return redirect('/');
   }
-
 }
